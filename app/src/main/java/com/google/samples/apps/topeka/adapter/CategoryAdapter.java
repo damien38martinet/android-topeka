@@ -18,7 +18,6 @@ package com.google.samples.apps.topeka.adapter;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
@@ -31,9 +30,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.samples.apps.topeka.R;
-import com.google.samples.apps.topeka.databinding.ItemCategoryBinding;
 import com.google.samples.apps.topeka.helper.ApiLevelHelper;
 import com.google.samples.apps.topeka.model.Category;
 import com.google.samples.apps.topeka.persistence.TopekaDatabaseHelper;
@@ -66,20 +65,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder((ItemCategoryBinding) DataBindingUtil
-                .inflate(mLayoutInflater, R.layout.item_category, parent, false));
+        return new ViewHolder(mLayoutInflater.inflate(R.layout.item_category, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        ItemCategoryBinding binding = holder.getBinding();
         Category category = mCategories.get(position);
-        binding.setCategory(category);
-        binding.executePendingBindings();
-        setCategoryIcon(category, binding.categoryIcon);
+        setCategoryIcon(category, holder.getCategoryImage());
         holder.itemView.setBackgroundColor(getColor(category.getTheme().getWindowBackgroundColor()));
-        binding.categoryTitle.setTextColor(getColor(category.getTheme().getTextPrimaryColor()));
-        binding.categoryTitle.setBackgroundColor(getColor(category.getTheme().getPrimaryColor()));
+        TextView categoryTitle = holder.getCategoryTitle();
+        categoryTitle.setText(category.getName());
+        categoryTitle.setTransitionName(category.getName());
+        categoryTitle.setTextColor(getColor(category.getTheme().getTextPrimaryColor()));
+        categoryTitle.setBackgroundColor(getColor(category.getTheme().getPrimaryColor()));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,15 +206,22 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ItemCategoryBinding mBinding;
+        private TextView categoryTitle;
+        private ImageView categoryImage;
 
-        public ViewHolder(ItemCategoryBinding binding) {
-            super(binding.getRoot());
-            mBinding = binding;
+        public ViewHolder(View view) {
+            super(view);
+            categoryTitle = view.findViewById(R.id.category_title);
+            categoryImage = view.findViewById(R.id.category_icon);
         }
 
-        public ItemCategoryBinding getBinding() {
-            return mBinding;
+        public TextView getCategoryTitle() {
+            return categoryTitle;
+        }
+
+
+        public ImageView getCategoryImage() {
+            return categoryImage;
         }
     }
 }
