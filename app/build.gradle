@@ -17,12 +17,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    buildToolsVersion '26.0.1'
+    buildToolsVersion '26.0.2'
     compileSdkVersion 26
-
-    dataBinding {
-        enabled = true
-    }
 
     defaultConfig {
         applicationId "com.google.samples.apps.topeka"
